@@ -1,9 +1,9 @@
 "use strict";
 
 const createProduct = require("./src/create");
-const getProduct = require("./src/getOne");
-const getAllProducts = require("./src/getAll");
-const deleteProduct = require("./src/delete");
+const viewProduct = require("./src/view");
+const listProducts = require("./src/list");
+const removeProduct = require("./src/remove");
 
 const create = async (event, context) => {
   const data = JSON.parse(event.body);
@@ -12,20 +12,20 @@ const create = async (event, context) => {
   return response;
 };
 
-const getAll = async (event, context) => {
+const list = async (event, context) => {
   const result = await listProducts();
   const response = { body: JSON.stringify(result) };
   return response;
 };
 
-const getOne = async (event, context) => {
-  const result = await getProduct(event.pathParameters.id);
+const view = async (event, context) => {
+  const result = await viewProduct(event.pathParameters.id);
   const response = { body: JSON.stringify(result) };
   return response;
 };
 
 const remove = async (event, context) => {
-  const result = await deleteProduct(event.pathParameters.id);
+  const result = await removeProduct(event.pathParameters.id);
   const response = {
     body: JSON.stringify({
       message: "product removed",
@@ -37,7 +37,7 @@ const remove = async (event, context) => {
 
 module.exports = {
   create,
-  getOne,
-  getAll,
+  view,
+  list,
   remove
 };

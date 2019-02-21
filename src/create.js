@@ -1,9 +1,8 @@
 "use strict";
 
 const AWS = require("aws-sdk");
-const uuid = require("uuid");
-
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const uuid = require("uuid");
 
 module.exports = async data => {
   const params = {
@@ -15,10 +14,6 @@ module.exports = async data => {
       addedAt: Date.now()
     }
   };
-
-  await dynamoDb
-    .put(params)
-    .promise();
-
+  const result = await dynamoDb.put(params).promise();
   return params.Item;
 };
