@@ -7,46 +7,66 @@ provider:
   region: eu-west-1
 
   iamRoleStatements:
-        - Effect: Allow
-          Action:
-            - dynamodb:DescribeTable
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-             Fn::Join:
-               - ""
-               - - "arn:aws:dynamodb:*:*:table/"
-                 - Ref: ProductsDynamoDbTable
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:dynamodb:*:*:table/"
+            - Ref: ProductsDynamoDbTable
 
 functions:
   create:
-        handler: handler.create
-        events:
-          - http:
-              path: products
-              method: post
-              cors: true
+    handler: handler.create
+    events:
+      - http:
+          path: products
+          method: post
+          cors: true
+  list:
+    handler: handler.getAll
+    events:
+      - http:
+          path: products
+          method: get
+          cors: true
+  view:
+    handler: handler.getOne
+    events:
+      - http:
+          path: products/{id}
+          method: get
+          cors: true
+  remove:
+    handler: handler.remove
+    events:
+      - http:
+          path: products/{id}
+          method: delete
+          cors: true
 
 resources:
-      Resources:
-        ProductsDynamoDbTable:
-          Type: AWS::DynamoDB::Table
-          Properties:
-            TableName: products
-            AttributeDefinitions:
-              - AttributeName: id
-                AttributeType: S
-            KeySchema:
-              - AttributeName: id
-                KeyType: HASH
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+  Resources:
+    ProductsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: products
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 plugins:
   - serverless-offline
-        
